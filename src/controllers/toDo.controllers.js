@@ -23,8 +23,25 @@ const remove = catchError(async(req, res) => {
     return res.sendStatus(204);
 });
 
+const getOne = catchError(async(req, res) => {
+    const { id } = req.params;
+    const toDo = await ToDo.findByPk(id);
+    return res.json(toDo);
+});
+
+const update = catchError(async(req, res) => {
+    const { id } = req.params;
+    const { title, description, isCompleted } = req.body;
+    const toDo = await ToDo.update({
+        title, description, isCompleted
+    }, { where: { id }, returning: true });
+    return res.json(toDo[1][0]);
+});
+ // [1, [ { esto me interesa } ] ]
 module.exports = {
     getAll,
     create,
     remove,
+    getOne,
+    update,
 }
